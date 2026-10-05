@@ -7,5 +7,6 @@ enum class Screen(val route: String) {
     GetText("get-text"),
     PostText("post-text"),
     PutText("put-text"),
+    DeleteText("delete-text"),
     AboutDevice("about-device")
 }

@@ -43,6 +43,14 @@ interface ApiService {
      * show the raw text the server sends back.
      */
     suspend fun updatePostRawText(id: Int, title: String, body: String): String
+
+    /**
+     * Lab 15: a plain DELETE call. Deletes an existing post and returns the
+     * HTTP status line plus the response body verbatim, without deserializing
+     * it, so the screen can show the raw text the server sends back
+     * (jsonplaceholder answers a DELETE with an empty JSON object `{}`).
+     */
+    suspend fun deletePostRawText(id: Int): String
 }
 
 class ApiServiceImpl(
@@ -84,4 +92,9 @@ class ApiServiceImpl(
             contentType(ContentType.Application.Json)
             setBody(Post(id = id, title = title, body = body))
         }.bodyAsText()
+
+    override suspend fun deletePostRawText(id: Int): String {
+        val response = client.delete("$baseUrl/posts/$id")
+        return "HTTP ${response.status}\n\n${response.bodyAsText()}"
+    }
 }

@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ua.edu.chnu.labo15.ui.about.AboutPage
+import ua.edu.chnu.labo15.ui.deletetext.DeleteTextPage
 import ua.edu.chnu.labo15.ui.gettext.GetTextPage
 import ua.edu.chnu.labo15.ui.home.HomePage
 import ua.edu.chnu.labo15.ui.network.NetworkPage
@@ -30,6 +31,7 @@ fun AppNavHost(
                 onGetTextButtonClick = { navController.navigate(Screen.GetText.route) },
                 onPostTextButtonClick = { navController.navigate(Screen.PostText.route) },
                 onPutTextButtonClick = { navController.navigate(Screen.PutText.route) },
+                onDeleteTextButtonClick = { navController.navigate(Screen.DeleteText.route) },
                 onAboutButtonClick = { navController.navigate(Screen.AboutDevice.route) },
             )
         }
@@ -60,6 +62,12 @@ fun AppNavHost(
 
         composable(Screen.PutText.route) {
             PutTextPage(
+                onUpButtonClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.DeleteText.route) {
+            DeleteTextPage(
                 onUpButtonClick = { navController.popBackStack() }
             )
         }

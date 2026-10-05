@@ -28,6 +28,7 @@ fun HomePage(
     onGetTextButtonClick: () -> Unit,
     onPostTextButtonClick: () -> Unit,
     onPutTextButtonClick: () -> Unit,
+    onDeleteTextButtonClick: () -> Unit,
     onAboutButtonClick: () -> Unit,
 ) {
     Column {
@@ -38,6 +39,7 @@ fun HomePage(
             onGetTextButtonClick = onGetTextButtonClick,
             onPostTextButtonClick = onPostTextButtonClick,
             onPutTextButtonClick = onPutTextButtonClick,
+            onDeleteTextButtonClick = onDeleteTextButtonClick,
             onAboutButtonClick = onAboutButtonClick,
         )
     }
@@ -68,6 +70,7 @@ private fun ContentView(
     onGetTextButtonClick: () -> Unit,
     onPostTextButtonClick: () -> Unit,
     onPutTextButtonClick: () -> Unit,
+    onDeleteTextButtonClick: () -> Unit,
     onAboutButtonClick: () -> Unit,
 ) {
     Column(
@@ -114,6 +117,12 @@ private fun ContentView(
         ) {
             Text("PUT as text")
         }
+        Button(
+            onClick = onDeleteTextButtonClick,
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+        ) {
+            Text("DELETE as text")
+        }
         OutlinedButton(
             onClick = onAboutButtonClick,
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
@@ -132,6 +141,7 @@ private fun HomePreview() {
         onGetTextButtonClick = {},
         onPostTextButtonClick = {},
         onPutTextButtonClick = {},
+        onDeleteTextButtonClick = {},
         onAboutButtonClick = {},
     )
 }

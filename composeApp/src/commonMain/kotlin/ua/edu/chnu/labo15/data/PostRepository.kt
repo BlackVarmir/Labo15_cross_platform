@@ -20,6 +20,9 @@ interface PostRepository {
 
     /** Lab 14: PUT (update) a post and return the raw response body as plain text. */
     suspend fun updatePostText(id: Int, title: String, body: String): NetworkResult<String>
+
+    /** Lab 15: DELETE a post and return the raw response (status + body) as plain text. */
+    suspend fun deletePostText(id: Int): NetworkResult<String>
 }
 
 class PostRepositoryImpl(
@@ -46,4 +49,7 @@ class PostRepositoryImpl(
 
     override suspend fun updatePostText(id: Int, title: String, body: String): NetworkResult<String> =
         networkResultOf { apiService.updatePostRawText(id, title, body) }
+
+    override suspend fun deletePostText(id: Int): NetworkResult<String> =
+        networkResultOf { apiService.deletePostRawText(id) }
 }

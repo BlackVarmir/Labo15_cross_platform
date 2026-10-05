@@ -18,6 +18,7 @@ import ua.edu.chnu.labo15.data.SystemInfoRepository
 import ua.edu.chnu.labo15.data.createHttpClient
 import ua.edu.chnu.labo15.db.AppDatabase
 import ua.edu.chnu.labo15.ui.about.AboutViewModel
+import ua.edu.chnu.labo15.ui.deletetext.DeleteTextViewModel
 import ua.edu.chnu.labo15.ui.gettext.GetTextViewModel
 import ua.edu.chnu.labo15.ui.network.NetworkViewModel
 import ua.edu.chnu.labo15.ui.posttext.PostTextViewModel
@@ -69,4 +70,5 @@ val appModule = module {
     viewModelOf(::GetTextViewModel)
     viewModelOf(::PostTextViewModel)
     viewModelOf(::PutTextViewModel)
+    viewModelOf(::DeleteTextViewModel)
 }
