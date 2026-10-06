@@ -16,9 +16,13 @@ Test API: [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com/).
 2. **Repository method** - `PostRepository.deletePostText(id)` wraps that call in a
    `NetworkResult` so success and failure are handled uniformly.
 3. **"DELETE as text" screen** (`ui/deletetext/`) - `DeleteTextPage` + `DeleteTextViewModel`.
-   The screen sends the DELETE (post id = 1) automatically on first display (and again via the
-   **DELETE** button), shows a progress indicator while the call is in flight, and renders the
-   raw response on screen as plain text (or an error message on failure).
+   Step 1: on open, the screen loads post id = 1 with GET and shows what will be deleted.
+   Step 2: nothing is deleted automatically - the DELETE is sent only when the user presses
+   **"Видалити пост №1"**. A progress indicator is shown while the call is in flight; then the
+   post is marked as deleted, a confirmation is shown, and the raw server response (request,
+   HTTP status and body) is rendered on screen as plain text (or an error message on failure).
+   **"Почати знову"** reloads the post. Note: jsonplaceholder is a fake API - it answers
+   `200 OK` but does not really delete anything, so the post comes back after a reload.
 4. **Navigation** - new `Screen.DeleteText` route, a Home-screen button, and the matching
    `composable` entry in `AppNavHost`; `DeleteTextViewModel` is registered in the Koin `appModule`.
 

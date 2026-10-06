@@ -8,19 +8,28 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ua.edu.chnu.labo15.data.NetworkResult
+import ua.edu.chnu.labo15.data.Post
 import ua.edu.chnu.labo15.data.PostRepository
 
 /** UI state for the Lab 15 "DELETE as plain text" screen. */
 data class DeleteTextUiState(
-    val isLoading: Boolean = false,
-    val text: String = "",
-    val errorText: String = "",
+    /** The post that is about to be deleted (loaded with GET first). */
+    val isLoadingPost: Boolean = false,
+    val post: Post? = null,
+    val postError: String = "",
+    /** The DELETE call itself. */
+    val isDeleting: Boolean = false,
+    val isDeleted: Boolean = false,
+    val resultText: String = "",
+    val deleteError: String = "",
 )
 
 /**
- * Lab 15 ViewModel: sends a single DELETE request and exposes the response
- * (HTTP status + body) as plain text. It reuses [PostRepository], which wraps
- * every call in a [NetworkResult] so success and failure are handled uniformly.
+ * Lab 15 ViewModel.
+ *
+ * 1. [loadPost] fetches the post with GET, so the screen can show what will be deleted.
+ * 2. [delete] runs only when the user presses the button: it sends DELETE /posts/{id}
+ *    and exposes the server response (HTTP status + body) as plain text.
  */
 class DeleteTextViewModel(
     private val repository: PostRepository,
@@ -29,15 +38,44 @@ class DeleteTextViewModel(
     private val _state = MutableStateFlow(DeleteTextUiState())
     val state: StateFlow<DeleteTextUiState> = _state.asStateFlow()
 
-    /** Performs DELETE /posts/{id} and stores the raw response text in the UI state. */
-    fun send() {
+    // Show the post as soon as the screen opens; nothing is deleted automatically.
+    init {
+        loadPost()
+    }
+
+    /** GET /posts/{id}: shows the post before it is deleted. Also resets the screen. */
+    fun loadPost() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, text = "", errorText = "") }
-            when (val result = repository.deletePostText(id = POST_ID)) {
+            _state.value = DeleteTextUiState(isLoadingPost = true)
+            when (val result = repository.getPost(POST_ID)) {
                 is NetworkResult.Success ->
-                    _state.update { it.copy(isLoading = false, text = result.data) }
+                    _state.update { it.copy(isLoadingPost = false, post = result.data) }
                 is NetworkResult.Error ->
-                    _state.update { it.copy(isLoading = false, errorText = result.message) }
+                    _state.update { it.copy(isLoadingPost = false, postError = result.message) }
+            }
+        }
+    }
+
+    /** DELETE /posts/{id}: deletes the post and stores the raw response as plain text. */
+    fun delete() {
+        viewModelScope.launch {
+            _state.update { it.copy(isDeleting = true, resultText = "", deleteError = "") }
+            when (val result = repository.deletePostText(POST_ID)) {
+                is NetworkResult.Success -> _state.update {
+                    it.copy(
+                        isDeleting = false,
+                        isDeleted = true,
+                        resultText = buildString {
+                            appendLine("Request:  DELETE /posts/$POST_ID")
+                            appendLine("Response: ${result.data.lineSequence().first()}")
+                            appendLine()
+                            appendLine("Response body:")
+                            append(result.data.substringAfter("\n\n"))
+                        },
+                    )
+                }
+                is NetworkResult.Error ->
+                    _state.update { it.copy(isDeleting = false, deleteError = result.message) }
             }
         }
     }
